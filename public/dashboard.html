@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mission Vault Dashboard</title>
+    <link rel="stylesheet" href="/css/missionvault-theme.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container mx-auto p-8">
+      <!-- Mission Vault Heading -->
+      <h1 class="text-5xl font-bold text-center text-yellow-400 mb-8">
+        Mission Vault
+      </h1>
+
+      <!-- Tabs -->
+      <div class="flex space-x-4 mb-6 border-b border-gray-300 pb-2">
+        <button
+          class="tab-btn text-yellow-400 font-bold tracking-wide uppercase hover:text-yellow-200"
+          data-tab="view"
+        >
+          View Records
+        </button>
+        <button
+          class="tab-btn text-yellow-400 font-bold tracking-wide uppercase hover:text-yellow-200"
+          data-tab="add"
+        >
+          Add Record
+        </button>
+        <button
+          class="tab-btn text-yellow-400 font-bold tracking-wide uppercase hover:text-yellow-200"
+          data-tab="update"
+        >
+          Update
+        </button>
+        <button
+          class="tab-btn text-yellow-400 font-bold tracking-wide uppercase hover:text-yellow-200"
+          data-tab="delete"
+        >
+          Delete
+        </button>
+      </div>
+
+      <!-- Tab Content -->
+      <div id="tab-content" class="mt-6">
+        <!-- View Records -->
+        <div class="tab-section hidden" data-tab="view">
+          <table class="w-full text-left border">
+            <thead class="bg-gray-800 text-yellow-300">
+              <tr>
+                <th
+                  class="p-2 border bg-gray-800 text-[#2d3625] placeholder-[#A2AD94]"
+                >
+                  ID
+                </th>
+                <th
+                  class="p-2 border bg-gray-800 text-[#2d3625] placeholder-[#A2AD94]"
+                >
+                  Name
+                </th>
+                <th
+                  class="p-2 border bg-gray-800 text-[#2d3625] placeholder-[#A2AD94]"
+                >
+                  Rank
+                </th>
+                <th
+                  class="p-2 border bg-gray-800 text-[#2d3625] placeholder-[#A2AD94]"
+                >
+                  Email
+                </th>
+              </tr>
+            </thead>
+            <tbody id="personnel-body">
+              <!-- JS will populate -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Add Record -->
+        <div class="tab-section hidden" data-tab="add">
+          <form id="add-record-form" class="space-y-4">
+            <input
+              type="text"
+              id="first_name"
+              placeholder="First Name"
+              class="p-2 border bg-gray-800 text-[#2d3625] placeholder-[#A2AD94]"
+              required
+            />
+            <input
+              type="text"
+              id="last_name"
+              placeholder="Last Name"
+              class="p-2 border bg-gray-800 text-[#2d3625] placeholder-[#A2AD94]"
+              required
+            />
+            <input
+              type="text"
+              id="rank"
+              placeholder="Rank"
+              class="p-2 border bg-gray-800 text-[#2d3625] placeholder-[#A2AD94]"
+            />
+            <input
+              type="email"
+              id="email"
+              placeholder="Email"
+              class="p-2 border bg-gray-800 text-[#2d3625] placeholder-[#A2AD94]"
+            />
+            <button type="submit" class="bg-yellow-600 text-white p-2 rounded">
+              Add Record
+            </button>
+          </form>
+        </div>
+
+        <!-- Update -->
+        <div class="tab-section hidden" data-tab="update">
+          <form id="update-record-form" class="space-y-4">
+            <input
+              type="text"
+              id="update_name"
+              placeholder="New Name"
+              class="p-2 border bg-gray-800 text-[#2d3625] placeholder-[#A2AD94]"
+              required
+            />
+            <input
+              type="email"
+              id="update_email"
+              placeholder="New Email"
+              class="p-2 border bg-gray-800 text-[#2d3625] placeholder-[#A2AD94]"
+            />
+            <button type="submit" class="bg-yellow-600 text-white p-2 rounded">
+              Update Record
+            </button>
+          </form>
+        </div>
+
+        <!-- Delete -->
+        <div class="tab-section hidden" data-tab="delete">
+          <form id="delete-record-form" class="space-y-4">
+            <input
+              type="number"
+              id="delete_id"
+              placeholder="ID to Delete"
+              class="p-2 border bg-gray-800 text-[#2d3625] placeholder-[#A2AD94]"
+              required
+            />
+            <button type="submit" class="bg-red-600 text-white p-2 rounded">
+              Delete Record
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- External JavaScript (after DOM is loaded) -->
+    <script src="js/dashboard.js"></script>
+  </body>
+</html>

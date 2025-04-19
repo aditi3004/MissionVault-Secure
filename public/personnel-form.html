@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Personnel Form</title>
+    <script defer src="js/personnel.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/missionvault-theme.css" />
+  </head>
+  <body class="bg-gray-100 p-6">
+    <div class="max-w-xl mx-auto bg-white p-6 rounded shadow">
+      <h1 class="text-2xl mb-4 font-bold text-center">Personnel Details</h1>
+      <form id="personnelForm">
+        <input
+          class="block w-full mb-4 border p-2"
+          type="text"
+          name="name"
+          placeholder="Full Name"
+          required
+        />
+        <input
+          class="block w-full mb-4 border p-2"
+          type="email"
+          name="email"
+          placeholder="Email"
+          required
+        />
+        <input
+          class="block w-full mb-4 border p-2"
+          type="text"
+          name="rank"
+          placeholder="Rank"
+          required
+        />
+        <input
+          class="block w-full mb-4 border p-2"
+          type="text"
+          name="division"
+          placeholder="Division"
+          required
+        />
+        <input
+          class="block w-full mb-4 border p-2"
+          type="date"
+          name="joining_date"
+          placeholder="Joining Date"
+          required
+        />
+        <button class="bg-blue-500 text-white px-4 py-2 rounded" type="submit">
+          Submit
+        </button>
+      </form>
+      <div
+        id="message"
+        class="mt-4 text-green-600 font-semibold text-center"
+      ></div>
+    </div>
+  </body>
+</html>

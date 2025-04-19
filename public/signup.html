@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Signup</title>
+    <link rel="stylesheet" href="/css/missionvault-theme.css" />
+  </head>
+  <body>
+    <h1>Signup</h1>
+    <form action="/signup" method="POST" class="space-y-4">
+      <input
+        type="text"
+        name="username"
+        placeholder="Username"
+        required
+        class="input"
+      />
+      <input
+        type="password"
+        name="password"
+        placeholder="Password"
+        required
+        class="input"
+      />
+      <select name="role" required class="input">
+        <option value="user">User</option>
+        <option value="admin">Admin</option>
+      </select>
+      <button type="submit" class="btn">Signup</button>
+    </form>
+  </body>
+</html>
