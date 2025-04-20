@@ -68,8 +68,8 @@ textarea {
   border: none;
   border-radius: 5px;
   margin-bottom: 1rem;
-  background-color: var(--khaki);
-  color: var(--text-dark);
+  /* background-color: var(--khaki); */
+  /* color: var(--text-dark); */
   font-family: var(--font-primary);
 }
 

@@ -52,26 +52,14 @@
           <table class="w-full text-left border">
             <thead class="bg-gray-800 text-yellow-300">
               <tr>
-                <th
-                  class="p-2 border bg-gray-800 text-[#2d3625] placeholder-[#A2AD94]"
-                >
-                  ID
-                </th>
-                <th
-                  class="p-2 border bg-gray-800 text-[#2d3625] placeholder-[#A2AD94]"
-                >
-                  Name
-                </th>
-                <th
-                  class="p-2 border bg-gray-800 text-[#2d3625] placeholder-[#A2AD94]"
-                >
-                  Rank
-                </th>
-                <th
-                  class="p-2 border bg-gray-800 text-[#2d3625] placeholder-[#A2AD94]"
-                >
-                  Email
-                </th>
+                <th class="p-2 border min-w-[150px]">Name</th>
+                <th class="p-2 border min-w-[150px]">Role</th>
+                <th class="p-2 border min-w-[150px]">Ranking</th>
+                <th class="p-2 border min-w-[150px]">Email</th>
+                <th class="p-2 border min-w-[150px]">Aadhaar Number</th>
+                <th class="p-2 border min-w-[150px]">PAN Number</th>
+                <th class="p-2 border min-w-[150px]">Date of Birth</th>
+                <th class="p-2 border min-w-[150px]">Service Number</th>
               </tr>
             </thead>
             <tbody id="personnel-body">
@@ -85,29 +73,59 @@
           <form id="add-record-form" class="space-y-4">
             <input
               type="text"
-              id="first_name"
-              placeholder="First Name"
-              class="p-2 border bg-gray-800 text-[#2d3625] placeholder-[#A2AD94]"
+              id="name"
+              placeholder="Full Name"
+              class="p-2 border bg-gray-800 text-[#0b1205]"
               required
             />
             <input
               type="text"
-              id="last_name"
-              placeholder="Last Name"
-              class="p-2 border bg-gray-800 text-[#2d3625] placeholder-[#A2AD94]"
+              id="role"
+              placeholder="Role"
+              class="p-2 border bg-gray-800 text-[#0b1205]"
               required
             />
             <input
               type="text"
-              id="rank"
-              placeholder="Rank"
-              class="p-2 border bg-gray-800 text-[#2d3625] placeholder-[#A2AD94]"
+              id="ranking"
+              placeholder="Ranking"
+              class="p-2 border bg-gray-800 text-[#0b1205]"
+              required
             />
             <input
               type="email"
               id="email"
               placeholder="Email"
-              class="p-2 border bg-gray-800 text-[#2d3625] placeholder-[#A2AD94]"
+              class="p-2 border bg-gray-800 text-[#0b1205]"
+              required
+            />
+            <input
+              type="text"
+              id="aadhaar_number"
+              placeholder="Aadhaar Number"
+              class="p-2 border bg-gray-800 text-[#0b1205]"
+              required
+            />
+            <input
+              type="text"
+              id="pan_number"
+              placeholder="PAN Number"
+              class="p-2 border bg-gray-800 text-[#0b1205]"
+              required
+            />
+            <input
+              type="date"
+              id="dob"
+              placeholder="Date of Birth"
+              class="p-2 border bg-gray-800 text-[#0b1205]"
+              required
+            />
+            <input
+              type="text"
+              id="service_number"
+              placeholder="Service Number"
+              class="p-2 border bg-gray-800 text-[#0b1205]"
+              required
             />
             <button type="submit" class="bg-yellow-600 text-white p-2 rounded">
               Add Record
@@ -122,14 +140,14 @@
               type="text"
               id="update_name"
               placeholder="New Name"
-              class="p-2 border bg-gray-800 text-[#2d3625] placeholder-[#A2AD94]"
+              class="p-2 border bg-gray-800 text-[#0b1205]"
               required
             />
             <input
               type="email"
               id="update_email"
               placeholder="New Email"
-              class="p-2 border bg-gray-800 text-[#2d3625] placeholder-[#A2AD94]"
+              class="p-2 border bg-gray-800 text-[#0b1205]"
             />
             <button type="submit" class="bg-yellow-600 text-white p-2 rounded">
               Update Record
@@ -144,7 +162,7 @@
               type="number"
               id="delete_id"
               placeholder="ID to Delete"
-              class="p-2 border bg-gray-800 text-[#2d3625] placeholder-[#A2AD94]"
+              class="p-2 border bg-gray-800 text-[#0b1205]"
               required
             />
             <button type="submit" class="bg-red-600 text-white p-2 rounded">
@@ -155,7 +173,7 @@
       </div>
     </div>
 
-    <!-- External JavaScript (after DOM is loaded) -->
+    <!-- External JavaScript -->
     <script src="js/dashboard.js"></script>
   </body>
 </html>

@@ -1,6 +1,7 @@
 const tabButtons = document.querySelectorAll(".tab-btn");
 const tabSections = document.querySelectorAll(".tab-section");
 
+// Tab Switching
 tabButtons.forEach((btn) => {
   btn.addEventListener("click", () => {
     const target = btn.getAttribute("data-tab");
@@ -18,6 +19,7 @@ tabButtons.forEach((btn) => {
   });
 });
 
+// Fetch all personnel records
 async function fetchPersonnelRecords() {
   try {
     const res = await fetch("/api/records");
@@ -29,18 +31,14 @@ async function fetchPersonnelRecords() {
     data.forEach((person) => {
       const row = `
         <tr>
-          <td class="p-2 border bg-gray-800 text-[#2d3625] placeholder-[#A2AD94]">${
-            person.id
-          }</td>
-          <td class="p-2 border bg-gray-800 text-[#2d3625] placeholder-[#A2AD94]">${
-            person.first_name
-          } ${person.last_name}</td>
-          <td class="p-2 border bg-gray-800 text-[#2d3625] placeholder-[#A2AD94]">${
-            person.rank || "N/A"
-          }</td>
-          <td class="p-2 border bg-gray-800 text-[#2d3625] placeholder-[#A2AD94]">${
-            person.email || "N/A"
-          }</td>
+          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${person.name}</td>
+          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${person.role}</td>
+          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${person.ranking}</td>
+          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${person.email}</td>
+          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${person.aadhaar_number}</td>
+          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${person.pan_number}</td>
+          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${person.dob}</td>
+          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${person.service_number}</td>
         </tr>
       `;
       tbody.innerHTML += row;
@@ -57,11 +55,14 @@ document
     e.preventDefault();
 
     const newRecord = {
-      first_name: document.getElementById("first_name").value,
-      last_name: document.getElementById("last_name").value,
-      rank: document.getElementById("rank").value,
+      name: document.getElementById("name").value,
+      role: document.getElementById("role").value,
+      ranking: document.getElementById("ranking").value,
       email: document.getElementById("email").value,
-      // Add other fields as needed
+      aadhaar_number: document.getElementById("aadhaar_number").value,
+      pan_number: document.getElementById("pan_number").value,
+      dob: document.getElementById("dob").value,
+      service_number: document.getElementById("service_number").value,
     };
 
     try {
@@ -70,53 +71,15 @@ document
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newRecord),
       });
+
       const data = await res.json();
-      alert(`Record Added! ID: ${data.id}`);
+      if (res.ok) {
+        alert(`Record Added! ID: ${data.id}`);
+        fetchPersonnelRecords();
+      } else {
+        alert("Error adding record");
+      }
     } catch (err) {
-      console.error("Error adding record:", err);
-    }
-  });
-
-// Update Record
-document
-  .getElementById("update-record-form")
-  .addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const updatedRecord = {
-      name: document.getElementById("update_name").value,
-      email: document.getElementById("update_email").value,
-    };
-
-    try {
-      const res = await fetch(
-        `/api/records/${document.getElementById("update_id").value}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updatedRecord),
-        }
-      );
-      const data = await res.json();
-      alert("Record Updated!");
-    } catch (err) {
-      console.error("Error updating record:", err);
-    }
-  });
-
-// Delete Record
-document
-  .getElementById("delete-record-form")
-  .addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const recordId = document.getElementById("delete_id").value;
-
-    try {
-      const res = await fetch(`/api/records/${recordId}`, {
-        method: "DELETE",
-      });
-      const data = await res.json();
-      alert("Record Deleted!");
-    } catch (err) {
-      console.error("Error deleting record:", err);
+      console.error("Error:", err);
     }
   });
