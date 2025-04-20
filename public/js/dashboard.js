@@ -31,14 +31,30 @@ async function fetchPersonnelRecords() {
     data.forEach((person) => {
       const row = `
         <tr>
-          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${person.name}</td>
-          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${person.role}</td>
-          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${person.ranking}</td>
-          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${person.email}</td>
-          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${person.aadhaar_number}</td>
-          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${person.pan_number}</td>
-          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${person.dob}</td>
-          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${person.service_number}</td>
+          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${
+            person.name
+          }</td>
+          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${
+            person.role
+          }</td>
+          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${
+            person.ranking
+          }</td>
+          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${
+            person.email
+          }</td>
+          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${
+            person.aadhaar_number
+          }</td>
+          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${
+            person.pan_number
+          }</td>
+          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${formatDate(
+            person.dob
+          )}</td>
+          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${
+            person.service_number
+          }</td>
         </tr>
       `;
       tbody.innerHTML += row;
@@ -83,3 +99,25 @@ document
       console.error("Error:", err);
     }
   });
+
+function formatDate(dateStr) {
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const date = new Date(dateStr);
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = months[date.getMonth()];
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
+}

@@ -3,6 +3,24 @@ const bcrypt = require("bcryptjs");
 const path = require("path");
 const db = require("../config/db");
 const router = express.Router();
+const Joi = require("joi");
+
+// Joi validation schema for signup
+const signupSchema = Joi.object({
+  username: Joi.string().alphanum().min(3).max(30).required(),
+  password: Joi.string().min(6).required(),
+  role: Joi.string().valid("admin", "user").required(),
+  name: Joi.string().required(),
+  ranking: Joi.string().required(),
+  email: Joi.string().email().required(),
+  aadhaar_number: Joi.string()
+    .length(12)
+    .pattern(/^[0-9]+$/)
+    .required(),
+  pan_number: Joi.string().length(10).alphanum().required(),
+  dob: Joi.date().required(),
+  service_number: Joi.string().required(),
+});
 
 // Redirect root to login
 router.get("/", (req, res) => {
@@ -21,6 +39,13 @@ router.get("/signup", (req, res) => {
 
 // Signup Logic (Inserts into personnel first, then users)
 router.post("/signup", async (req, res) => {
+  const { error } = signupSchema.validate(req.body);
+  if (error) {
+    return res
+      .status(400)
+      .send("Validation failed: " + error.details[0].message);
+  }
+
   const {
     username,
     password,
@@ -36,7 +61,6 @@ router.post("/signup", async (req, res) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  // Step 1: Insert into personnel
   const insertPersonnelQuery = `
     INSERT INTO personnel (name, role, ranking, email, aadhaar_number, pan_number, dob, service_number)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -62,7 +86,6 @@ router.post("/signup", async (req, res) => {
 
       const personnel_id = result.insertId;
 
-      // Step 2: Insert into users with the personnel_id
       const insertUserQuery = `
         INSERT INTO users (username, password, role, personnel_id)
         VALUES (?, ?, ?, ?)
@@ -77,8 +100,7 @@ router.post("/signup", async (req, res) => {
             return res.send("Signup failed during user creation.");
           }
 
-          // ✅ Signup successful — redirect user
-          res.redirect("/dashboard.html"); // or "/login" or "/personnel-form.html"
+          res.redirect("/dashboard.html");
         }
       );
     }
@@ -101,14 +123,12 @@ router.post("/login", (req, res) => {
       const isMatch = await bcrypt.compare(password, user.password);
 
       if (isMatch) {
-        // ✅ Store in session (server-side)
         req.session.user = {
           id: user.id,
           username: user.username,
           role: user.role,
         };
 
-        // ✅ Also send user info to browser to be stored in sessionStorage (client-side)
         const userData = {
           username: user.username,
           role: user.role,
@@ -127,7 +147,6 @@ router.post("/login", (req, res) => {
         return res.send("Invalid username or password");
       }
     } else {
-      // 🚨 Username doesn't exist — redirect to signup
       return res.redirect("/signup");
     }
   });

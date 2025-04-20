@@ -12,12 +12,10 @@
   </head>
   <body>
     <div class="container mx-auto p-8">
-      <!-- Mission Vault Heading -->
       <h1 class="text-5xl font-bold text-center text-yellow-400 mb-8">
         Mission Vault
       </h1>
 
-      <!-- Tabs -->
       <div class="flex space-x-4 mb-6 border-b border-gray-300 pb-2">
         <button
           class="tab-btn text-yellow-400 font-bold tracking-wide uppercase hover:text-yellow-200"
@@ -45,9 +43,7 @@
         </button>
       </div>
 
-      <!-- Tab Content -->
       <div id="tab-content" class="mt-6">
-        <!-- View Records -->
         <div class="tab-section hidden" data-tab="view">
           <table class="w-full text-left border">
             <thead class="bg-gray-800 text-yellow-300">
@@ -68,7 +64,6 @@
           </table>
         </div>
 
-        <!-- Add Record -->
         <div class="tab-section hidden" data-tab="add">
           <form id="add-record-form" class="space-y-4">
             <input
@@ -118,6 +113,7 @@
               id="dob"
               placeholder="Date of Birth"
               class="p-2 border bg-gray-800 text-[#0b1205]"
+              data-format="dd-mm-yyyy"
               required
             />
             <input
@@ -133,7 +129,6 @@
           </form>
         </div>
 
-        <!-- Update -->
         <div class="tab-section hidden" data-tab="update">
           <form id="update-record-form" class="space-y-4">
             <input
@@ -155,7 +150,6 @@
           </form>
         </div>
 
-        <!-- Delete -->
         <div class="tab-section hidden" data-tab="delete">
           <form id="delete-record-form" class="space-y-4">
             <input
@@ -173,7 +167,6 @@
       </div>
     </div>
 
-    <!-- External JavaScript -->
     <script src="js/dashboard.js"></script>
   </body>
 </html>

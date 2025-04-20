@@ -1,28 +1,32 @@
-// server.js
 const express = require("express");
+const https = require("https");
+const fs = require("fs");
 const bodyParser = require("body-parser");
 const mysql = require("mysql2");
-const session = require("express-session"); // ✅ Add this
+const session = require("express-session");
 const authRoutes = require("./routes/auth");
 const db = require("./config/db");
+
 const app = express();
 
-// Middleware to parse JSON and form data
-app.use(express.json()); // for application/json
-app.use(express.urlencoded({ extended: true })); // for x-www-form-urlencoded
-
-// ✅ Add this session middleware BEFORE routes
-app.use(
-  session({
-    secret: "missionvault-secret-key", // Use a secure key in prod
-    resave: false,
-    saveUninitialized: false,
-    cookie: { secure: false }, // set to true only if using HTTPS
-  })
-);
+// Load SSL certificate and key
+const sslOptions = {
+  key: fs.readFileSync("key.pem"),
+  cert: fs.readFileSync("cert.crt"),
+};
 
 // Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(
+  session({
+    secret: "missionvault-secret-key",
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: true }, // ✅ only works on HTTPS
+  })
+);
 app.use(express.static("public"));
 
 // Routes
@@ -30,7 +34,7 @@ app.use("/", authRoutes);
 const apiRoutes = require("./routes/CRUD_api");
 app.use("/api", apiRoutes);
 
-// Server start
-app.listen(3000, () => {
-  console.log("Server running on http://localhost:3000");
+// Start HTTPS server
+https.createServer(sslOptions, app).listen(443, () => {
+  console.log("🔐 HTTPS Server running at https://localhost");
 });
