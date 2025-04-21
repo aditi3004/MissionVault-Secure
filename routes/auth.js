@@ -4,6 +4,7 @@ const path = require("path");
 const db = require("../config/db");
 const router = express.Router();
 const Joi = require("joi");
+const authorize = require("../middleware/authorise_user");
 
 // Joi validation schema for signup
 const signupSchema = Joi.object({
@@ -150,6 +151,70 @@ router.post("/login", (req, res) => {
       return res.redirect("/signup");
     }
   });
+});
+
+router.get(
+  "/api/user/payments",
+  authorize(["user", "admin", "manager"]),
+  async (req, res) => {
+    try {
+      const userId = req.session.user.id;
+      const [payments] = await db.query(
+        "SELECT date, amount, purpose FROM payments WHERE user_id = ? ORDER BY date DESC",
+        [userId]
+      );
+      res.json(payments);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Error fetching payments.");
+    }
+  }
+);
+// profile route
+router.get("/api/user/profile", authorize, async (req, res) => {
+  try {
+    const [user] = await db.query(
+      "SELECT username, role FROM users WHERE id = ?",
+      [req.user.id]
+    );
+    res.json(user[0]);
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// password update
+router.post("/api/user/password", authorize, async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+
+  const [user] = await db.query("SELECT * FROM users WHERE id = ?", [
+    req.user.id,
+  ]);
+
+  const match = await bcrypt.compare(currentPassword, user[0].password);
+  if (!match)
+    return res.status(400).json({ message: "Incorrect current password" });
+
+  const hashed = await bcrypt.hash(newPassword, 10);
+  await db.query("UPDATE users SET password = ? WHERE id = ?", [
+    hashed,
+    req.user.id,
+  ]);
+
+  res.json({ message: "Password updated successfully" });
+});
+
+// payment history
+router.get("/api/user/payments", authorize, async (req, res) => {
+  try {
+    const [payments] = await db.query(
+      "SELECT * FROM payments WHERE user_id = ?",
+      [req.user.id]
+    );
+    res.json(payments);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to load payment history" });
+  }
 });
 
 module.exports = router;

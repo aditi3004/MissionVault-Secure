@@ -23,6 +23,9 @@ tabButtons.forEach((btn) => {
 async function fetchPersonnelRecords() {
   try {
     const res = await fetch("/api/records");
+    if (!res.ok) {
+      throw new Error(`Failed to fetch records: ${res.statusText}`);
+    }
     const data = await res.json();
 
     const tbody = document.getElementById("personnel-body");
@@ -31,36 +34,37 @@ async function fetchPersonnelRecords() {
     data.forEach((person) => {
       const row = `
         <tr>
-          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${
+          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${escapeHTML(
             person.name
-          }</td>
-          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${
-            person.role
-          }</td>
-          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${
-            person.ranking
-          }</td>
-          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${
-            person.email
-          }</td>
-          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${
-            person.aadhaar_number
-          }</td>
-          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${
-            person.pan_number
-          }</td>
-          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${formatDate(
-            person.dob
           )}</td>
-          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${
+          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${escapeHTML(
+            person.role
+          )}</td>
+          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${escapeHTML(
+            person.ranking
+          )}</td>
+          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${escapeHTML(
+            person.email
+          )}</td>
+          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${escapeHTML(
+            person.aadhaar_number
+          )}</td>
+          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${escapeHTML(
+            person.pan_number
+          )}</td>
+          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${escapeHTML(
+            formatDate(person.dob)
+          )}</td>
+          <td class="p-2 border bg-gray-800 text-[#2d3625] min-w-[150px]">${escapeHTML(
             person.service_number
-          }</td>
+          )}</td>
         </tr>
       `;
       tbody.innerHTML += row;
     });
   } catch (err) {
     console.error("Error fetching records:", err);
+    alert("Failed to fetch personnel records. Please try again later.");
   }
 }
 
@@ -80,6 +84,10 @@ document
       dob: document.getElementById("dob").value,
       service_number: document.getElementById("service_number").value,
     };
+
+    if (!validateInput(newRecord)) {
+      return; // Stop submission if validation fails
+    }
 
     try {
       const res = await fetch("/api/records", {
@@ -120,4 +128,37 @@ function formatDate(dateStr) {
   const month = months[date.getMonth()];
   const year = date.getFullYear();
   return `${day}-${month}-${year}`;
+}
+
+function escapeHTML(str) {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function validateInput(record) {
+  if (!record.name || record.name.length > 255) {
+    alert("Invalid name");
+    return false;
+  }
+  if (!record.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(record.email)) {
+    alert("Invalid email");
+    return false;
+  }
+  if (!/^\d{12}$/.test(record.aadhaar_number)) {
+    alert("Invalid Aadhaar number");
+    return false;
+  }
+  if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(record.pan_number)) {
+    alert("Invalid PAN number");
+    return false;
+  }
+  if (!record.dob || isNaN(new Date(record.dob).getTime())) {
+    alert("Invalid date of birth");
+    return false;
+  }
+  return true;
 }

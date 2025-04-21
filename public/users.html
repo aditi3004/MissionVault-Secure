@@ -4,36 +4,104 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>User Profile</title>
+    <link rel="stylesheet" href="/css/missionvault-theme.css" />
     <link
       href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/css/missionvault-theme.css" />
   </head>
-  <body class="bg-gray-100 min-h-screen flex items-center justify-center">
-    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-      <h1 class="text-2xl font-bold text-blue-700 mb-4 text-center">
+  <body
+    class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen flex items-center justify-center"
+  >
+    <div
+      class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md w-full max-w-md profile-card"
+    >
+      <h1
+        class="text-2xl font-bold text-blue-700 dark:text-blue-300 mb-4 text-center"
+      >
         User Profile
       </h1>
 
-      <div id="profile" class="space-y-4">
-        <p>
-          <span class="font-semibold">Username:</span>
-          <span id="username"></span>
-        </p>
-        <p><span class="font-semibold">Role:</span> <span id="role"></span></p>
+      <!-- Profile Info -->
+      <div id="profile" class="space-y-4 mb-4">
+        <p><strong>Username:</strong> <span id="username"></span></p>
+        <p><strong>Role:</strong> <span id="role"></span></p>
       </div>
 
-      <div class="mt-6 text-center">
+      <!-- Change Password -->
+      <div class="border-t border-gray-300 pt-4">
+        <h2 class="text-lg font-semibold text-yellow-400 mb-2">
+          Change Password
+        </h2>
+        <form id="passwordForm" class="space-y-3">
+          <input
+            type="password"
+            placeholder="Current Password"
+            name="currentPassword"
+            class="w-full px-3 py-2 border rounded dark:bg-gray-700"
+            required
+          />
+          <input
+            type="password"
+            placeholder="New Password"
+            name="newPassword"
+            class="w-full px-3 py-2 border rounded dark:bg-gray-700"
+            required
+          />
+          <button
+            type="submit"
+            class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 w-full"
+          >
+            Update Password
+          </button>
+        </form>
+      </div>
+
+      <!-- Payment History -->
+      <div class="mt-6 border-t border-gray-300 pt-4">
+        <div class="flex justify-between items-center mb-2">
+          <h2 class="text-lg font-semibold text-yellow-400">Payment History</h2>
+          <button
+            id="togglePaymentsBtn"
+            class="bg-military-green text-blue-200 text-sm px-3 py-1 rounded hover:underline"
+          >
+            Show
+          </button>
+        </div>
+
+        <div id="paymentHistory" class="hidden overflow-x-auto">
+          <table class="min-w-full text-sm border border-gray-300">
+            <thead class="bg-gray-100 dark:bg-gray-700">
+              <tr>
+                <th class="px-4 py-2 border">Date</th>
+                <th class="px-4 py-2 border">Amount</th>
+                <th class="px-4 py-2 border">Purpose</th>
+              </tr>
+            </thead>
+            <tbody id="paymentTableBody" class="bg-white dark:bg-gray-800">
+              <!-- JS will inject rows -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Dark Mode & Logout -->
+      <div class="mt-6 text-center space-y-2">
+        <button
+          id="toggleDarkMode"
+          class="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800 w-full"
+        >
+          Toggle Dark Mode
+        </button>
         <button
           id="logoutBtn"
-          class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+          class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 w-full"
         >
           Logout
         </button>
       </div>
     </div>
 
-    <script src="js/user.js"></script>
+    <script src="/js/user.js"></script>
   </body>
 </html>
