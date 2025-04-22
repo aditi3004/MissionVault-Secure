@@ -15,6 +15,8 @@ const sslOptions = {
   cert: fs.readFileSync("cert.crt"),
 };
 
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

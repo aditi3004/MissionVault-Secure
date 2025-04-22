@@ -4,7 +4,20 @@ const path = require("path");
 const db = require("../config/db");
 const router = express.Router();
 const Joi = require("joi");
-const authorize = require("../middleware/authorise_user");
+const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
+
+// Middleware to authenticate token
+function authenticateToken(req, res, next) {
+  const token = req.cookies.token;
+  if (!token) return res.sendStatus(401);
+
+  jwt.verify(token, "secret", (err, user) => {
+    if (err) return res.sendStatus(403);
+    req.user = user;
+    next();
+  });
+}
 
 // Joi validation schema for signup
 const signupSchema = Joi.object({
@@ -108,7 +121,7 @@ router.post("/signup", async (req, res) => {
   );
 });
 
-// Login Logic with Role-Based Redirection
+// Login Logic with JWT and Cookie
 router.post("/login", (req, res) => {
   const { username, password } = req.body;
 
@@ -124,11 +137,22 @@ router.post("/login", (req, res) => {
       const isMatch = await bcrypt.compare(password, user.password);
 
       if (isMatch) {
+        // Session fallback (optional)
         req.session.user = {
           id: user.id,
           username: user.username,
           role: user.role,
         };
+
+        // JWT generation
+        const token = jwt.sign({ id: user.id }, "secret", { expiresIn: "1h" });
+
+        // Set cookie
+        res.cookie("token", token, {
+          httpOnly: true,
+          secure: false, // Set to true if using HTTPS
+          maxAge: 3600000, // 1 hour
+        });
 
         const userData = {
           username: user.username,
@@ -153,38 +177,52 @@ router.post("/login", (req, res) => {
   });
 });
 
-router.get(
-  "/api/user/payments",
-  authorize(["user", "admin", "manager"]),
-  async (req, res) => {
-    try {
-      const userId = req.session.user.id;
-      const [payments] = await db.query(
-        "SELECT date, amount, purpose FROM payments WHERE user_id = ? ORDER BY date DESC",
-        [userId]
-      );
-      res.json(payments);
-    } catch (err) {
-      console.error(err);
-      res.status(500).send("Error fetching payments.");
-    }
-  }
-);
-// profile route
-router.get("/api/user/profile", authorize, async (req, res) => {
+// Get user profile (JWT Auth)
+router.get("/api/user/profile", authenticateToken, async (req, res) => {
   try {
-    const [user] = await db.query(
-      "SELECT username, role FROM users WHERE id = ?",
-      [req.user.id]
-    );
-    res.json(user[0]);
+    const [user] = await db
+      .promise()
+      .query(
+        "SELECT u.username, u.role, p.name, p.ranking FROM users u JOIN personnel p ON u.personnel_id = p.personnel_id WHERE u.id = ?",
+        [req.user.id]
+      );
+    if (user.length === 0)
+      return res.status(404).json({ error: "User not found" });
+
+    res.json({
+      username: user[0].name,
+      role: user[0].role,
+      ranking: user[0].ranking,
+    });
   } catch (err) {
-    res.status(500).json({ message: "Server error" });
+    console.error("Error fetching profile:", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
-// password update
-router.post("/api/user/password", authorize, async (req, res) => {
+// Get payment history (JWT Auth)
+router.get("/api/user/payments", authenticateToken, async (req, res) => {
+  try {
+    const [[user]] = await db
+      .promise()
+      .query("SELECT personnel_id FROM users WHERE id = ?", [req.user.id]);
+
+    const [payments] = await db
+      .promise()
+      .query(
+        "SELECT amount, purpose, payment_date AS date FROM payments WHERE personnel_id = ? ORDER BY payment_date DESC",
+        [user.personnel_id]
+      );
+
+    res.json(payments);
+  } catch (err) {
+    console.error("Error fetching payments:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Update password (JWT Auth)
+router.post("/api/user/password", authenticateToken, async (req, res) => {
   const { currentPassword, newPassword } = req.body;
 
   const [user] = await db.query("SELECT * FROM users WHERE id = ?", [
@@ -202,19 +240,6 @@ router.post("/api/user/password", authorize, async (req, res) => {
   ]);
 
   res.json({ message: "Password updated successfully" });
-});
-
-// payment history
-router.get("/api/user/payments", authorize, async (req, res) => {
-  try {
-    const [payments] = await db.query(
-      "SELECT * FROM payments WHERE user_id = ?",
-      [req.user.id]
-    );
-    res.json(payments);
-  } catch (err) {
-    res.status(500).json({ message: "Failed to load payment history" });
-  }
 });
 
 module.exports = router;
