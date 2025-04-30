@@ -245,6 +245,13 @@ document
     resultTable.appendChild(tbody);
     resultContainer.appendChild(resultTable);
     resultContainer.classList.remove("hidden");
+    // Show and prefill the update form
+    const updateForm = document.getElementById("update-record-form");
+    if (updateForm) {
+      document.getElementById("update_name").value = user.name;
+      document.getElementById("update_email").value = user.email || "";
+      updateForm.classList.remove("hidden");
+    }
   });
 
 // Helper function to escape HTML characters
