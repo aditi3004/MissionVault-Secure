@@ -108,6 +108,185 @@ document
     }
   });
 
+// Search Recorddocument.addEventListener("DOMContentLoaded", () => {
+// Static array of users
+const users = [
+  {
+    personnel_id: 3,
+    name: "Aditi Sharma",
+    role: "admin",
+    ranking: "major",
+    email: "10387aditisha@gmail.com",
+    aadhaar_number: "123456789012",
+    pan_number: "QDVPS1471P",
+    dob: "2025-04-08",
+    service_number: "1234",
+  },
+  {
+    personnel_id: 4,
+    name: "bhavini",
+    role: "user",
+    ranking: "commander",
+    email: "bhavini@army.net",
+    aadhaar_number: "123456789014",
+    pan_number: "QDVPS1471Y",
+    dob: "2025-04-25",
+    service_number: "6789",
+  },
+  {
+    personnel_id: 5,
+    name: "anushka lonkar",
+    role: "user",
+    ranking: "commander",
+    email: "anu@gmail.com",
+    aadhaar_number: "123456789015",
+    pan_number: "QDVPS1471D",
+    dob: "2025-04-08",
+    service_number: "3456",
+  },
+  {
+    personnel_id: 6,
+    name: "Annada Dash",
+    role: "user",
+    ranking: "commander",
+    email: "annada@gmail.com",
+    aadhaar_number: "123456789017",
+    pan_number: "QDVPS1471A",
+    dob: "2002-05-30",
+    service_number: "345612",
+  },
+  {
+    personnel_id: 8,
+    name: "Annie D'szuza",
+    role: "user",
+    ranking: "Colonel",
+    email: "annie@army.net",
+    aadhaar_number: "123456789019",
+    pan_number: "QDVPS1471U",
+    dob: "1997-05-05",
+    service_number: "8907654",
+  },
+];
+
+// Event listener for the search form
+document
+  .getElementById("search-record-form")
+  .addEventListener("submit", async (e) => {
+    e.preventDefault(); // Prevent the form from reloading the page
+
+    const searchServiceNumber = document
+      .getElementById("search_service_number")
+      .value.trim();
+    let resultContainer = document.getElementById("search-results-section");
+
+    // Ensure results container exists
+    if (!resultContainer) {
+      resultContainer = document.createElement("div");
+      resultContainer.id = "search-results-section";
+      resultContainer.classList.add("mt-4");
+      document.body.appendChild(resultContainer);
+    }
+
+    // Remove any previous table
+    let oldTable = document.getElementById("search-results-body");
+    if (oldTable) oldTable.remove();
+
+    // Create new table
+    const resultTable = document.createElement("table");
+    resultTable.id = "search-results-body";
+    resultTable.classList.add("w-full", "table-auto", "border-collapse");
+
+    // Search for the user with the matching service number
+    const user = users.find(
+      (user) => user.service_number === searchServiceNumber
+    );
+
+    if (!user) {
+      return;
+    }
+
+    // Add table headers
+    const thead = document.createElement("thead");
+    const headerRow = document.createElement("tr");
+    ["Name", "Email", "Role", "Date of Birth"].forEach((headerText) => {
+      const th = document.createElement("th");
+      th.classList.add("p-2", "border", "bg-gray-800", "text-[#2d3625]");
+      th.textContent = headerText;
+      headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+    resultTable.appendChild(thead);
+
+    // Add table body
+    const tbody = document.createElement("tbody");
+    const tr = document.createElement("tr");
+
+    const tdName = document.createElement("td");
+    tdName.classList.add("p-2", "border", "bg-gray-800", "text-[#2d3625]");
+    tdName.textContent = escapeHTML(user.name);
+    tr.appendChild(tdName);
+
+    const tdEmail = document.createElement("td");
+    tdEmail.classList.add("p-2", "border", "bg-gray-800", "text-[#2d3625]");
+    tdEmail.textContent = escapeHTML(user.email || "N/A");
+    tr.appendChild(tdEmail);
+
+    const tdRole = document.createElement("td");
+    tdRole.classList.add("p-2", "border", "bg-gray-800", "text-[#2d3625]");
+    tdRole.textContent = escapeHTML(user.role || "N/A");
+    tr.appendChild(tdRole);
+
+    const tdDob = document.createElement("td");
+    tdDob.classList.add("p-2", "border", "bg-gray-800", "text-[#2d3625]");
+    tdDob.textContent = user.dob ? escapeHTML(formatDate(user.dob)) : "N/A";
+    tr.appendChild(tdDob);
+
+    tbody.appendChild(tr);
+    resultTable.appendChild(tbody);
+    resultContainer.appendChild(resultTable);
+    resultContainer.classList.remove("hidden");
+  });
+
+// Helper function to escape HTML characters
+function escapeHTML(str) {
+  return str.replace(/[&<>"']/g, (match) => {
+    const escapeChars = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    };
+    return escapeChars[match];
+  });
+}
+
+// Helper function to format the date
+function formatDate(date) {
+  const d = new Date(date);
+  return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+}
+
+// Utility: Escape HTML (for safe rendering)
+function escapeHTML(str) {
+  return str.replace(/[&<>"']/g, (char) => {
+    const escapeChars = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;",
+    };
+    return escapeChars[char] || char;
+  });
+}
+
+// Utility: Format Date (basic version, can customize)
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return !isNaN(date.getTime()) ? date.toLocaleDateString() : "Invalid Date";
+}
+
 function formatDate(dateStr) {
   const months = [
     "Jan",
@@ -140,25 +319,48 @@ function escapeHTML(str) {
 }
 
 function validateInput(record) {
-  if (!record.name || record.name.length > 255) {
-    alert("Invalid name");
+  // Basic empty checks
+  for (const [key, value] of Object.entries(record)) {
+    if (!value || value.trim() === "") {
+      alert(`Please fill in the ${key.replace("_", " ")} field.`);
+      return false;
+    }
+  }
+
+  // Email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(record.email)) {
+    alert("Please enter a valid email address.");
     return false;
   }
-  if (!record.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(record.email)) {
-    alert("Invalid email");
+
+  // Aadhaar number: 12 digits
+  const aadhaarRegex = /^\d{12}$/;
+  if (!aadhaarRegex.test(record.aadhaar_number)) {
+    alert("Please enter a valid 12-digit Aadhaar Number.");
     return false;
   }
-  if (!/^\d{12}$/.test(record.aadhaar_number)) {
-    alert("Invalid Aadhaar number");
+
+  // PAN number: format e.g., ABCDE1234F
+  const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
+  if (!panRegex.test(record.pan_number)) {
+    alert("Please enter a valid PAN Number (e.g., ABCDE1234F).");
     return false;
   }
-  if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(record.pan_number)) {
-    alert("Invalid PAN number");
+
+  // Date of birth: not a future date
+  const dob = new Date(record.dob);
+  if (dob > new Date()) {
+    alert("Date of Birth cannot be in the future.");
     return false;
   }
-  if (!record.dob || isNaN(new Date(record.dob).getTime())) {
-    alert("Invalid date of birth");
+
+  // Service number: alphanumeric check
+  const serviceNumberRegex = /^[a-zA-Z0-9\-]+$/;
+  if (!serviceNumberRegex.test(record.service_number)) {
+    alert("Service Number should be alphanumeric.");
     return false;
   }
+
   return true;
 }

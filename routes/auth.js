@@ -242,4 +242,46 @@ router.post("/api/user/password", authenticateToken, async (req, res) => {
   res.json({ message: "Password updated successfully" });
 });
 
+router.put("/api/update", async (req, res) => {
+  const { oldName, newName } = req.body;
+  try {
+    const [result] = await db.execute(
+      "UPDATE personnel SET name = ? WHERE LOWER(name) = LOWER(?)",
+      [newName, oldName]
+    );
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Name not found." });
+    }
+    res.json({ message: "Record updated successfully." });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error." });
+  }
+});
+
+// Example in Express.js
+router.get("/api/records/search", async (req, res) => {
+  const { serviceNumber } = req.query;
+  console.log("req.query", req.query);
+  console.log("Searching for service number:", serviceNumber);
+
+  if (!serviceNumber) {
+    return res.status(400).json({ error: "Service number is required" });
+  }
+
+  try {
+    // Fetch the user by service number
+    const user = await User.findOne({ service_number: serviceNumber });
+
+    if (!user) {
+      return res.status(404).json({ error: "No user found" });
+    }
+
+    res.json(user); // Returning a single user object
+  } catch (err) {
+    console.error("Error fetching user:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 module.exports = router;

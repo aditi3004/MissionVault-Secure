@@ -129,8 +129,32 @@
           </form>
         </div>
 
+        <
         <div class="tab-section hidden" data-tab="update">
-          <form id="update-record-form" class="space-y-4">
+          <form id="search-record-form" class="space-y-4">
+            <input
+              type="text"
+              id="search_service_number"
+              placeholder="Enter Service Number"
+              class="p-2 border bg-gray-800 text-[#0b1205]"
+              required
+            />
+            <button type="submit" class="bg-blue-600 text-white p-2 rounded">
+              Search
+            </button>
+          </form>
+
+          <!-- This section will display search results -->
+          <div id="search-results-section" class="hidden">
+            <table
+              id="search-results-body"
+              class="w-full table-auto border-collapse"
+            >
+              <!-- Dynamic search results will be inserted here -->
+            </table>
+          </div>
+
+          <form id="update-record-form" class="space-y-4 hidden">
             <input
               type="text"
               id="update_name"

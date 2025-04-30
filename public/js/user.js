@@ -16,28 +16,28 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
   // Handle password update
-  const passwordForm = document.getElementById("passwordForm");
-  passwordForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const currentPassword = passwordForm.currentPassword.value;
-    const newPassword = passwordForm.newPassword.value;
+  // const passwordForm = document.getElementById("passwordForm");
+  // passwordForm.addEventListener("submit", async (e) => {
+  //   e.preventDefault();
+  //   const currentPassword = passwordForm.currentPassword.value;
+  //   const newPassword = passwordForm.newPassword.value;
 
-    try {
-      const res = await fetch("/api/user/password", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ currentPassword, newPassword }),
-      });
+  //   try {
+  //     const res = await fetch("/api/user/password", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ currentPassword, newPassword }),
+  //     });
 
-      const result = await res.json();
-      alert(result.message || "Password updated successfully");
-    } catch (error) {
-      console.error(error);
-      alert("Failed to update password.");
-    }
-  });
+  //     const result = await res.json();
+  //     alert(result.message || "Password updated successfully");
+  //   } catch (error) {
+  //     console.error(error);
+  //     alert("Failed to update password.");
+  //   }
+  // });
 
   // Toggle payment history
   const toggleBtn = document.getElementById("togglePaymentsBtn");

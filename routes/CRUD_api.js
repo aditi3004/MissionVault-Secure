@@ -36,11 +36,9 @@ router.post("/records", (req, res) => {
       service_number,
     ].includes(undefined)
   ) {
-    return res
-      .status(400)
-      .json({
-        error: "All fields must be provided. No undefined values allowed.",
-      });
+    return res.status(400).json({
+      error: "All fields must be provided. No undefined values allowed.",
+    });
   }
 
   const sql = `
@@ -115,6 +113,51 @@ router.delete("/records/:personnel_id", (req, res) => {
     if (err) return res.status(500).json({ error: err.message });
     res.json({ success: true });
   });
+});
+
+// Update name using oldName and newName
+router.put("/records/update-name", (req, res) => {
+  const { oldName, newName } = req.body;
+
+  if (!oldName || !newName) {
+    return res
+      .status(400)
+      .json({ error: "Both oldName and newName are required." });
+  }
+
+  const sql = "UPDATE personnel SET name = ? WHERE LOWER(name) = LOWER(?)";
+  db.execute(sql, [newName, oldName], (err, result) => {
+    if (err) return res.status(500).json({ error: err.message });
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Name not found." });
+    }
+
+    res.json({ message: "Record updated successfully." });
+  });
+});
+
+// Express route to handle search by service number
+router.get("/api/records/search", async (req, res) => {
+  const { serviceNumber } = req.query;
+
+  if (!serviceNumber) {
+    return res
+      .status(400)
+      .json({ error: "serviceNumber parameter is missing" });
+  }
+
+  try {
+    const [results] = await db.execute(
+      "SELECT name, email, role, dob FROM personnel WHERE service_number = ?",
+      [serviceNumber]
+    );
+
+    res.json(results);
+  } catch (err) {
+    console.error("Database error:", err);
+    res.status(500).json({ error: "Database error" });
+  }
 });
 
 module.exports = router;
